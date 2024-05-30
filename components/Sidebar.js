@@ -30,9 +30,6 @@ const Sidebar = ({ modalVisible, setModalVisible }) => {
           </Pressable>
         </View>
         <View style={{width: windowWidth / 1.5, height: windowHeight / 5, justifyContent: "center", alignItems: "center"}}>
-          <Pressable style={{width: 150, height: 150, alignItems: "center", justifyContent: "center", borderColor: "#F15025", borderWidth: 3, borderRadius: 100, padding: 15}}>
-            <Image style={{height: 100, width: 100}} source={require('../assets/image/MeowLife Logo.png')}/>
-          </Pressable>
           <Text  style={{fontSize: 30}}>Yakiniku</Text>
           <Pressable onPress={()=>navigation.navigate("EditProfile")}>
             <Text style={{fontSize: 15, textDecorationLine: "underline"}}>Edit Profile</Text>

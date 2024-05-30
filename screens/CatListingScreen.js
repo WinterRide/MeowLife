@@ -1,4 +1,4 @@
-import { Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RNPickerSelect from 'react-native-picker-select';
@@ -11,9 +11,10 @@ import UploadMedia from '../components/UploadMedia';
 import UploadVaccine from '../components/UploadVaccine';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid'; // Install this using npm or yarn
-import { storage, firestore } from '../firebase'; // Adjust according to your Firebase setup
+import { storage, firestore, firebase } from '../firebase'; // Adjust according to your Firebase setup
 import { uploadBytes, ref, getDownloadURL } from 'firebase/storage';
 import { addDoc, collection } from 'firebase/firestore';
+import * as FileSystem from "expo-file-system"
 
 const CatListingScreen = () => {
     const window = Dimensions.get('window');
@@ -28,6 +29,8 @@ const CatListingScreen = () => {
     const [playfulness, setPlayfulness] = useState(1);
     const [kidFriendly, setKidFriendly] = useState(1);
     const [energy, setEnergy] = useState(1);
+
+    const [uploading, setUploading] = useState(false)
 
     const breedList = [
         "American breed", "European breed", "Eastern breed", "Other breed"
@@ -91,37 +94,95 @@ const CatListingScreen = () => {
         }
     };
 
-    const uploadImages = async () => {
-        const uploadPromises = images.map(async (image) => {
-            const imageRef = ref(storage, `images/${uuidv4()}`);
-            const img = await fetch(image.uri);
-            const bytes = await img.blob();
-            await uploadBytes(imageRef, bytes);
-            const downloadURL = await getDownloadURL(imageRef);
-            return downloadURL;
-        });
-        return Promise.all(uploadPromises);
-    };
-
-    const uploadVaccines = async () => {
-        const uploadPromises = vaccines.map(async (vaccine) => {
-            if (vaccine.image) {
-                const vaccineRef = ref(storage, `vaccines/${uuidv4()}`);
-                const img = await fetch(vaccine.image);
-                const bytes = await img.blob();
-                await uploadBytes(vaccineRef, bytes);
-                const downloadURL = await getDownloadURL(vaccineRef);
-                return { ...vaccine, image: downloadURL };
+    const uploadImages = async (imageUris) => {
+        setUploading(true);
+        const imageUrls = [];
+    
+        try {
+            for (const image of imageUris) {
+                const { uri } = await FileSystem.getInfoAsync(image);
+                const blob = await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.onload = () => {
+                        resolve(xhr.response);
+                    };
+                    xhr.onerror = (e) => {
+                        reject(new TypeError("Network request failed"));
+                    };
+                    xhr.responseType = 'blob';
+                    xhr.open('GET', uri, true);
+                    xhr.send(null);
+                });
+    
+                const fileName = image.substring(image.lastIndexOf('/') + 1);
+                const fileRef = ref(storage, `product/${fileName}`); // Adjusted to use imported storage
+    
+                await uploadBytes(fileRef, blob);
+    
+                // Get the download URL
+                const downloadURL = await getDownloadURL(fileRef);
+                imageUrls.push(downloadURL);
             }
-            return vaccine;
-        });
-        return Promise.all(uploadPromises);
+    
+            setUploading(false);
+            setImages([]); // Clear the images after upload
+    
+            return imageUrls;
+    
+        } catch (error) {
+            console.error(error);
+            setUploading(false);
+            return [];
+        }
+    };
+    
+    const uploadVaccines = async (vaccineList) => {
+        setUploading(true);
+        const imageUrls = [];
+    
+        try {
+            for (const vaccine of vaccineList) {
+                const { image, name } = vaccine
+                if (!image) continue; // Skip if there is no image
+    
+                const { uri } = await FileSystem.getInfoAsync(image);
+                const blob = await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.onload = () => {
+                        resolve(xhr.response);
+                    };
+                    xhr.onerror = (e) => {
+                        reject(new TypeError("Network request failed"));
+                    };
+                    xhr.responseType = 'blob';
+                    xhr.open('GET', uri, true);
+                    xhr.send(null);
+                });
+    
+                const fileName = image.substring(image.lastIndexOf('/') + 1);
+                const fileRef = ref(storage, `vaccines/${fileName}`); // Adjusted to use imported storage
+    
+                await uploadBytes(fileRef, blob);
+    
+                // Get the download URL
+                const downloadURL = await getDownloadURL(fileRef);
+                imageUrls.push({name, images: downloadURL});
+            }
+    
+            setUploading(false);
+            return imageUrls;
+    
+        } catch (error) {
+            console.error(error);
+            setUploading(false);
+            return [];
+        }
     };
 
     const handleUpload = async () => {
         try {
-            // const imageUrls = await uploadImages();
-            // const updatedVaccines = await uploadVaccines();
+            const imageUrls = await uploadImages(images);
+            const updatedVaccines = await uploadVaccines(vaccines);
             await addDoc(collection(firestore, 'catListings'), {
                 species,
                 breed,
@@ -133,8 +194,8 @@ const CatListingScreen = () => {
                     { kidFriendly },
                     { energy }
                 ],
-                // images: imageUrls,
-                // vaccines: updatedVaccines,
+                images: imageUrls,
+                vaccines: updatedVaccines,
             });
             alert('Cat listing requested successfully!');
         } catch (error) {
@@ -145,11 +206,12 @@ const CatListingScreen = () => {
 
     const image = images[0]
 
-    console.log(image)
+    console.log(vaccines)
+
 
     const uploadMedia = async () => {
         setUploading(true);
-
+    
         try {
             const { uri } = await FileSystem.getInfoAsync(image);
             const blob = await new Promise((resolve, reject) => {
@@ -158,26 +220,36 @@ const CatListingScreen = () => {
                     resolve(xhr.response);
                 };
                 xhr.onerror = (e) => {
-                    reject(new TypeError("Network request failed"))
-                }
+                    reject(new TypeError("Network request failed"));
+                };
                 xhr.responseType = 'blob';
-                    xhr.open('GET', uri, true);
-                    xhr.send(null);
+                xhr.open('GET', uri, true);
+                xhr.send(null);
             });
     
-            const fileName = image.substring(image.lastIndexOf('/')+ 1);
-            const ref = firebase.storage().ref().child(fileName);
+            const fileName = image.substring(image.lastIndexOf('/') + 1);
+            const ref = firebase.storage().ref().child(`product/${fileName}`);
     
             await ref.put(blob);
+    
+            // Get the download URL
+            const downloadURL = await ref.getDownloadURL();
+    
             setUploading(false);
-            Alert.alert('Photo uploaded!!');
+            Alert.alert('Photo uploaded!!', `Download URL: ${downloadURL}`);
+            console.log(downloadURL)
             setImage(null);
+    
+            // Optionally, you can return the download URL or use it as needed
+           
     
         } catch (error) {
             console.error(error);
             setUploading(false);
         }
-    }
+    };
+    
+    
 
     return (
         <View style={{ width: windowWidth, height: windowHeight, alignItems: "center", justifyContent: "center" }}>
@@ -278,7 +350,7 @@ const CatListingScreen = () => {
                     </View>
 
                     <View style={{ flex: 1, height: windowHeight / 5 }}>
-                        <Pressable onPress={uploadMedia}
+                        <Pressable onPress={handleUpload}
                             style={{ top: 0, backgroundColor: "#F15025", alignItems: "center", justifyContent: "center", borderRadius: 10, padding: 10 }}>
                             <Text style={{ fontWeight: "bold", color: "white", fontSize: 15 }}>Request Cat Listing</Text>
                         </Pressable>
