@@ -32,6 +32,7 @@ const PropertyCard = ({ item }) => {
       description: item.description,
     });
   };
+  
   return (
     <Pressable
       onPress={infoScreen}
