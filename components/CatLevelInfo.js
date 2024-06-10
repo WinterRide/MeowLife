@@ -3,7 +3,7 @@ import React from "react";
 import { Feather } from "@expo/vector-icons";
 import { Tooltip } from "react-native-elements";
 
-const CatLevelInfo = ({levelColor}) => {
+const CatLevelInfo = ({ levelColor }) => {
   const window = Dimensions.get("window");
   const windowWidth = window.width;
   const windowHeight = window.height;

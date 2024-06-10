@@ -35,10 +35,10 @@ const PropertyCard = ({ item }) => {
       description: item.description,
       status: item.status,
       onFeatured: item.onFeatured,
-      onOrder: item.onOrder
+      onOrder: item.onOrder,
     });
   };
-  
+
   return (
     <Pressable
       onPress={infoScreen}

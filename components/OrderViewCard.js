@@ -4,35 +4,38 @@ import { useNavigation } from "@react-navigation/native";
 import { useUser } from "../UserContext";
 import { doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
-import { getNicknameByEmail, handleAcceptOrderBySeller } from "../controller/OrderController";
+import {
+  getNicknameByEmail,
+  handleAcceptOrderBySeller,
+} from "../controller/OrderController";
 
 export default function OrderViewCard({ item, index }) {
-    const navigation = useNavigation()
-    const[buyerName, setBuyerName] = useState(null)
-    const {userInfo} = useUser()
+  const navigation = useNavigation();
+  const [buyerName, setBuyerName] = useState(null);
+  const { userInfo } = useUser();
 
-    const findNickname = async () => {
-        try {
-            const nickname = await getNicknameByEmail(item.buyer);
-            setBuyerName(nickname)
-        } catch (error) {
-            console.error('Error finding nickname:', error);
-        }
-    };
+  const findNickname = async () => {
+    try {
+      const nickname = await getNicknameByEmail(item.buyer);
+      setBuyerName(nickname);
+    } catch (error) {
+      console.error("Error finding nickname:", error);
+    }
+  };
 
-    findNickname()
+  findNickname();
 
-    const handleAcceptOrder = async () => {
-        if (userInfo?.onOrder == true){
-            alert("Please finish your on-going order first")
-            navigation.goBack()
-            return
-        }
-        await handleAcceptOrderBySeller(item.id, item.buyer, item.seller)
-        navigation.goBack()
-    };
+  const handleAcceptOrder = async () => {
+    if (userInfo?.onOrder == true) {
+      alert("Please finish your on-going order first");
+      navigation.goBack();
+      return;
+    }
+    await handleAcceptOrderBySeller(item.id, item.buyer, item.seller);
+    navigation.goBack();
+  };
 
-    return (
+  return (
     <Pressable
       key={index}
       style={{
@@ -47,16 +50,18 @@ export default function OrderViewCard({ item, index }) {
         padding: 12,
       }}
     >
-        <View>
-            <Text style={{fontSize: 15}}>Order Request from</Text>
-            <Text style={{fontSize: 20, fontWeight: "bold"}}>"{buyerName}"</Text>
-        </View>
-        <View style={{flex: 1, alignItems: "flex-end"}}>
-            <Pressable onPress={handleAcceptOrder} style={{backgroundColor: "#25BC3D", padding: 10, borderRadius: 10}}>
-                <Text style={{color: "white"}}>Accept</Text>
-            </Pressable>
-        </View>
-      
+      <View>
+        <Text style={{ fontSize: 15 }}>Order Request from</Text>
+        <Text style={{ fontSize: 20, fontWeight: "bold" }}>"{buyerName}"</Text>
+      </View>
+      <View style={{ flex: 1, alignItems: "flex-end" }}>
+        <Pressable
+          onPress={handleAcceptOrder}
+          style={{ backgroundColor: "#25BC3D", padding: 10, borderRadius: 10 }}
+        >
+          <Text style={{ color: "white" }}>Accept</Text>
+        </Pressable>
+      </View>
     </Pressable>
   );
 }

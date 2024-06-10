@@ -6,12 +6,12 @@ import {
   Text,
   View,
   Image,
-} from 'react-native';
-import React from 'react';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { auth } from '../firebase';
-import { useNavigation } from '@react-navigation/native';
-import { useUser } from '../UserContext';
+} from "react-native";
+import React from "react";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { auth } from "../firebase";
+import { useNavigation } from "@react-navigation/native";
+import { useUser } from "../UserContext";
 
 const Sidebar = ({ modalVisible, setModalVisible }) => {
   if (!modalVisible) {
@@ -21,35 +21,35 @@ const Sidebar = ({ modalVisible, setModalVisible }) => {
   const navigation = useNavigation();
   const { userInfo } = useUser();
 
-  const window = Dimensions.get('window');
+  const window = Dimensions.get("window");
   const windowWidth = window.width;
   const windowHeight = window.height;
 
   return (
     <View
       style={{
-        position: 'absolute',
+        position: "absolute",
         zIndex: 9999,
         width: windowWidth,
         height: windowHeight,
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
       }}
     >
       <View
         style={{
-          position: 'absolute',
+          position: "absolute",
           height: windowHeight,
           width: windowWidth / 1.5,
-          backgroundColor: 'white',
+          backgroundColor: "white",
           right: 0,
         }}
       >
         <View
           style={{
             height: windowHeight / 6,
-            flexDirection: 'row',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            alignItems: "center",
           }}
         >
           <Pressable
@@ -63,18 +63,18 @@ const Sidebar = ({ modalVisible, setModalVisible }) => {
           style={{
             width: windowWidth / 1.5,
             height: windowHeight / 5,
-            justifyContent: 'center',
-            alignItems: 'center'
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <Text style={{ fontSize: 30 }}>{userInfo.nickname}</Text>
           <Pressable
             onPress={() => {
-              navigation.navigate('EditProfile', { userInfo });
+              navigation.navigate("EditProfile", { userInfo });
               setModalVisible(false);
             }}
           >
-            <Text style={{ fontSize: 15, textDecorationLine: 'underline' }}>
+            <Text style={{ fontSize: 15, textDecorationLine: "underline" }}>
               Edit Profile
             </Text>
           </Pressable>
@@ -82,24 +82,24 @@ const Sidebar = ({ modalVisible, setModalVisible }) => {
         <View
           style={{
             flex: 1,
-            justifyContent: 'top',
-            alignItems: 'center',
+            justifyContent: "top",
+            alignItems: "center",
             marginTop: 75,
           }}
         >
           <Pressable
             onPress={() => {
-              navigation.navigate('Home');
+              navigation.navigate("Home");
               setModalVisible(false);
             }}
             style={{
               width: windowWidth / 2,
               height: windowHeight / 13,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderTopColor: '#A9A9A9',
+              justifyContent: "center",
+              alignItems: "center",
+              borderTopColor: "#A9A9A9",
               borderTopWidth: 3,
-              borderBottomColor: '#A9A9A9',
+              borderBottomColor: "#A9A9A9",
               borderBottomWidth: 3,
             }}
           >
@@ -107,15 +107,15 @@ const Sidebar = ({ modalVisible, setModalVisible }) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('Market');
+              navigation.navigate("Market");
               setModalVisible(false);
             }}
             style={{
               width: windowWidth / 2,
               height: windowHeight / 13,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderBottomColor: '#A9A9A9',
+              justifyContent: "center",
+              alignItems: "center",
+              borderBottomColor: "#A9A9A9",
               borderBottomWidth: 3,
             }}
           >
@@ -123,15 +123,15 @@ const Sidebar = ({ modalVisible, setModalVisible }) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('Listing');
+              navigation.navigate("Listing");
               setModalVisible(false);
             }}
             style={{
               width: windowWidth / 2,
               height: windowHeight / 13,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderBottomColor: '#A9A9A9',
+              justifyContent: "center",
+              alignItems: "center",
+              borderBottomColor: "#A9A9A9",
               borderBottomWidth: 3,
             }}
           >
@@ -139,15 +139,15 @@ const Sidebar = ({ modalVisible, setModalVisible }) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('Order');
+              navigation.navigate("Order");
               setModalVisible(false);
             }}
             style={{
               width: windowWidth / 2,
               height: windowHeight / 13,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderBottomColor: '#A9A9A9',
+              justifyContent: "center",
+              alignItems: "center",
+              borderBottomColor: "#A9A9A9",
               borderBottomWidth: 3,
             }}
           >
@@ -157,16 +157,16 @@ const Sidebar = ({ modalVisible, setModalVisible }) => {
             style={{
               width: windowWidth / 2,
               height: windowHeight / 13,
-              justifyContent: 'center',
-              alignItems: 'center',
-              flexDirection: 'row',
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "row",
             }}
             onPress={() => {
               auth.signOut();
             }}
           >
             <MaterialIcons name="logout" size={15} color="#F15025" />
-            <Text style={{ fontSize: 15, marginLeft: 10, color: '#F15025' }}>
+            <Text style={{ fontSize: 15, marginLeft: 10, color: "#F15025" }}>
               Logout
             </Text>
           </Pressable>
@@ -177,10 +177,10 @@ const Sidebar = ({ modalVisible, setModalVisible }) => {
           setModalVisible(false);
         }}
         style={{
-          position: 'absolute',
+          position: "absolute",
           height: windowHeight,
           width: windowWidth / 3,
-          backgroundColor: 'black',
+          backgroundColor: "black",
           left: 0,
           opacity: 0.5,
         }}

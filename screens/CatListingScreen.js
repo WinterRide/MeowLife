@@ -9,24 +9,21 @@ import {
   Alert,
 } from "react-native";
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import RNPickerSelect from "react-native-picker-select";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
-import { Tooltip } from "react-native-elements";
-import { Feather } from "@expo/vector-icons";
 import CatLevelInfo from "../components/CatLevelInfo";
 import UploadMedia from "../components/UploadMedia";
 import UploadVaccine from "../components/UploadVaccine";
 import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid"; // Install this using npm or yarn
-import { storage, firestore, firebase } from "../firebase"; // Adjust according to your Firebase setup
-import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
-import { addDoc, collection, updateDoc } from "firebase/firestore";
-import * as FileSystem from "expo-file-system";
 import { useUser } from "../UserContext";
-import { uploadData, uploadImages, uploadVaccines } from "../controller/DistinctController";
+import {
+  uploadData,
+  uploadImages,
+  uploadVaccines,
+} from "../controller/DistinctController";
 import { useNavigation } from "@react-navigation/native";
+import { createCat } from "../factory/CatFactory";
 
 const CatListingScreen = () => {
   const window = Dimensions.get("window");
@@ -149,26 +146,25 @@ const CatListingScreen = () => {
   };
 
   const handleUpload = async () => {
-    setUploading(true)
+    setUploading(true);
     const imageUrls = await uploadImages(images);
     const updatedVaccines = await uploadVaccines(vaccines);
-    uploadData("request", {
+    const level = [{ affection }, { playfulness }, { kidFriendly }, { energy }];
+    const cat = createCat({
       species,
       breed,
-      age: Number(age),
-      owner: userInfo.nickname,
-      ownerEmail: userInfo.email,
-      price: Number(price),
+      age,
+      userInfo,
+      price,
       description,
-      level: [{ affection }, { playfulness }, { kidFriendly }, { energy }],
+      level,
       photos: imageUrls,
       vaccine: updatedVaccines,
-      status: "In Review",
-      type: "cat"
     });
-    alert("Cat Listing requested successfully")
-    setUploading(false)
-    navigation.navigate
+    uploadData("request", cat);
+    alert("Cat Listing requested successfully");
+    setUploading(false);
+    navigation.navigate;
   };
 
   const image = images[0];

@@ -1,11 +1,10 @@
 import { firestore } from "../firebase";
-import { getDocs, collection, setDoc, doc, query, where } from "firebase/firestore";
+import { getDocs, collection, doc, query, where } from "firebase/firestore";
 import "react-native-get-random-values";
-import { storage, firebase } from "../firebase";
+import { storage } from "../firebase";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { addDoc, updateDoc } from "firebase/firestore";
 import * as FileSystem from "expo-file-system"
-import { useState } from "react";
 
 export const getData = async(collectionName) => {
     const colRef = collection(firestore, collectionName);

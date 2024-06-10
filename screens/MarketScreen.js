@@ -1,15 +1,26 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { ScrollView, StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Pressable,
+} from "react-native";
 import { useIsFocused, useRoute } from "@react-navigation/native";
 import Header from "../components/Header";
 import PropertyCard from "../components/PropertyCard";
-import { BottomModal, ModalContent, ModalFooter, ModalTitle, SlideAnimation } from "react-native-modals";
+import {
+  BottomModal,
+  ModalContent,
+  ModalFooter,
+  ModalTitle,
+  SlideAnimation,
+} from "react-native-modals";
 import { Entypo } from "@expo/vector-icons";
 import { Octicons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { firestore } from "../firebase";
-import { getDocs, collection } from "firebase/firestore";
 import { getData } from "../controller/DistinctController";
 
 const window = Dimensions.get("window");
@@ -23,7 +34,7 @@ const MarketScreen = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
       fetchData();
@@ -32,7 +43,7 @@ const MarketScreen = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    setData(await getData("market"))
+    setData(await getData("market"));
     setLoading(false);
   };
 
@@ -52,7 +63,7 @@ const MarketScreen = () => {
       return data;
     }
     const input = route.params.input.toLowerCase();
-    return data.filter(item => item.species.toLowerCase().includes(input));
+    return data.filter((item) => item.species.toLowerCase().includes(input));
   };
 
   const filteredData = useMemo(() => takeFilteredData(), [route.params, data]);
@@ -90,26 +101,54 @@ const MarketScreen = () => {
   return (
     <View style={{ flex: 1 }}>
       <Header />
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, padding: 12 }}>
-        <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ flexDirection: "row", alignItems: "center", backgroundColor: "#F15025", padding: 5, paddingLeft: 15, paddingRight: 15, borderRadius: 10 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 16,
+          padding: 12,
+        }}
+      >
+        <Pressable
+          onPress={() => setModalVisible(!modalVisible)}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "#F15025",
+            padding: 5,
+            paddingLeft: 15,
+            paddingRight: 15,
+            borderRadius: 10,
+          }}
+        >
           <Octicons name="arrow-switch" size={22} color="white" />
-          <Text style={{ fontSize: 15, fontWeight: "500", marginLeft: 8, color: "white" }}>Filter</Text>
+          <Text
+            style={{
+              fontSize: 15,
+              fontWeight: "500",
+              marginLeft: 8,
+              color: "white",
+            }}
+          >
+            Filter
+          </Text>
         </Pressable>
       </View>
 
       <ScrollView contentContainerStyle={styles.container}>
-      <View>
-        {loading ? (
-            <> 
-            <View style={styles.loadingTxt}>
-              <Text>Loading...</Text>
-            </View>
+        <View>
+          {loading ? (
+            <>
+              <View style={styles.loadingTxt}>
+                <Text>Loading...</Text>
+              </View>
             </>
           ) : sortedData.length === 0 ? (
-            <> 
-            <View style={styles.loadingTxt}>
-              <Text>There's no item in the market</Text>
-            </View>
+            <>
+              <View style={styles.loadingTxt}>
+                <Text>There's no item in the market</Text>
+              </View>
             </>
           ) : (
             <View style={styles.grid}>
@@ -120,7 +159,7 @@ const MarketScreen = () => {
               ))}
             </View>
           )}
-      </View>
+        </View>
       </ScrollView>
 
       <BottomModal
@@ -129,8 +168,23 @@ const MarketScreen = () => {
         swipeThreshold={200}
         footer={
           <ModalFooter>
-            <Pressable onPress={() => applyFilter(selectedFilter)} style={{ marginLeft: "auto", marginRight: "auto", backgroundColor: "#F15025", width: windowWidth, height: windowHeight / 20, alignItems: "center", justifyContent: "center" }}>
-              <Text style={{ fontSize: 16, color: "white", fontWeight: "bold" }}>Apply</Text>
+            <Pressable
+              onPress={() => applyFilter(selectedFilter)}
+              style={{
+                marginLeft: "auto",
+                marginRight: "auto",
+                backgroundColor: "#F15025",
+                width: windowWidth,
+                height: windowHeight / 20,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{ fontSize: 16, color: "white", fontWeight: "bold" }}
+              >
+                Apply
+              </Text>
             </Pressable>
           </ModalFooter>
         }
@@ -142,23 +196,57 @@ const MarketScreen = () => {
       >
         <ModalContent style={{ width: "100%", height: 200 }}>
           <View style={{ flexDirection: "row" }}>
-            <View style={{ marginVertical: 10, flex: 2, height: 280, borderRightWidth: 1, borderColor: "#E0E0E0" }}>
+            <View
+              style={{
+                marginVertical: 10,
+                flex: 2,
+                height: 280,
+                borderRightWidth: 1,
+                borderColor: "#E0E0E0",
+              }}
+            >
               <Text style={{ textAlign: "center" }}>Sort</Text>
             </View>
             <View style={{ flex: 3, margin: 10 }}>
               {filters.map((item, index) => (
-                <Pressable onPress={() => setSelectedFilter(item.filter)} style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }} key={index}>
+                <Pressable
+                  onPress={() => setSelectedFilter(item.filter)}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginVertical: 10,
+                  }}
+                  key={index}
+                >
                   {selectedFilter === item.filter ? (
                     <FontAwesome name="circle" size={18} color="green" />
                   ) : (
                     <Entypo name="circle" size={18} color="black" />
                   )}
-                  <Text style={{ fontSize: 16, fontWeight: "500", marginLeft: 6 }}>{item.filter}</Text>
+                  <Text
+                    style={{ fontSize: 16, fontWeight: "500", marginLeft: 6 }}
+                  >
+                    {item.filter}
+                  </Text>
                 </Pressable>
               ))}
-              <Pressable onPress={clearFilters} style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginVertical: 10, backgroundColor: "#F15025", borderRadius: 10 }}>
+              <Pressable
+                onPress={clearFilters}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginVertical: 10,
+                  backgroundColor: "#F15025",
+                  borderRadius: 10,
+                }}
+              >
                 <Ionicons name="close-outline" size={16} color="white" />
-                <Text style={{ fontSize: 16, fontWeight: "500", color: "white" }}>Clear filters</Text>
+                <Text
+                  style={{ fontSize: 16, fontWeight: "500", color: "white" }}
+                >
+                  Clear filters
+                </Text>
               </Pressable>
             </View>
           </View>
@@ -175,20 +263,20 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 16,
   },
-  loadingTxt : {
-    width: "100%", 
-    height: windowHeight / 4, 
-    justifyContent: "center", 
-    alignItems: "center"
+  loadingTxt: {
+    width: "100%",
+    height: windowHeight / 4,
+    justifyContent: "center",
+    alignItems: "center",
   },
   grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 10
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 10,
   },
   gridItem: {
-    width: '48%',
-    marginBottom: 16
-  }
+    width: "48%",
+    marginBottom: 16,
+  },
 });

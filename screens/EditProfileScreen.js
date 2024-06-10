@@ -1,7 +1,17 @@
 // screens/EditProfileScreen.js
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Pressable, Dimensions } from 'react-native';
-import { getDocumentIDByEmail, updateProfile } from '../controller/UserController';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Pressable,
+  Dimensions,
+} from "react-native";
+import {
+  getDocumentIDByEmail,
+  updateProfile,
+} from "../controller/UserController";
 
 const window = Dimensions.get("window");
 const windowWidth = window.width;
@@ -14,9 +24,15 @@ const EditProfileScreen = ({ route }) => {
   const [phoneNumber, setPhoneNumber] = useState(userInfo.phoneNumber);
   const [address, setAddress] = useState(userInfo.address);
 
-  const handleUpdateProfile = async() => {
-    await updateProfile(userInfo.email, nickname, fullName, phoneNumber, address)
-  }
+  const handleUpdateProfile = async () => {
+    await updateProfile(
+      userInfo.email,
+      nickname,
+      fullName,
+      phoneNumber,
+      address
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -55,11 +71,25 @@ const EditProfileScreen = ({ route }) => {
           onChangeText={setAddress}
           placeholder="Enter your address"
         />
-        <Text style={{color: "gray", fontSize: 12}}>This address will be used for shipping address</Text>
+        <Text style={{ color: "gray", fontSize: 12 }}>
+          This address will be used for shipping address
+        </Text>
       </View>
-      <View style={{flex: 1, alignItems: "center"}}>
-        <Pressable onPress={handleUpdateProfile} style={{backgroundColor: "#F15025", width: windowWidth / 1.5, padding: 10, alignItems: "center", justifyContent: "center", borderRadius: 10}}>
-          <Text style={{color: "white", fontWeight: "bold"}}>Update Profile</Text>
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <Pressable
+          onPress={handleUpdateProfile}
+          style={{
+            backgroundColor: "#F15025",
+            width: windowWidth / 1.5,
+            padding: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 10,
+          }}
+        >
+          <Text style={{ color: "white", fontWeight: "bold" }}>
+            Update Profile
+          </Text>
         </Pressable>
       </View>
     </View>
@@ -77,14 +107,14 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#F15025"
+    color: "#F15025",
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderBottomWidth: 1,
     borderRadius: 4,
-    color: "black"
+    color: "black",
   },
 });
 
