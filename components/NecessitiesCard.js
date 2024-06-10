@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 import React from "react";
 
 export default function NecessitiesCard({ item }) {

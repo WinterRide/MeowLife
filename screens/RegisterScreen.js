@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '../firebase';
+import { auth, firestore } from '../firebase';
 import { setDoc,doc } from 'firebase/firestore';
 
 
@@ -73,11 +73,14 @@ const RegisterScreen = () => {
             const user = userCredentials._tokenResponse.email;
             const uid = auth.currentUser.uid;
 
-             setDoc(doc(db,"users",`${uid}`),{
+             setDoc(doc(firestore,"users",`${uid}`),{
                  email:user,
                  nickname: nickname,
                  name : name,
-                 address: ""
+                 address: "",
+                 onOrder: false,
+                 role: "Customer",
+                 orders: []
              })
         })
     }

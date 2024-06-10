@@ -1,5 +1,6 @@
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import CatLevelInfo from './CatLevelInfo';
 
 const LevelIndicator = ({level}) => {
 
@@ -25,7 +26,10 @@ const LevelIndicator = ({level}) => {
 
   return (
     <View style={{gap: 10}}>
-        <Text style={{color: "gray"}}>Cat Indicator</Text>
+        <View style={{flexDirection: "row", gap: 5}}>
+            <Text style={{color: "gray"}}>Cat Indicator</Text>
+            <CatLevelInfo levelColor={"gray"}/>
+        </View>
         <View style={{flexDirection: "row", alignItems: "center", gap: 30}}>
             <Text style={{color: "#FF9999", fontWeight: "bold", width: "20%"}}>Affection</Text>
             <View style={{flex: 1, height: 20, width: "80%", backgroundColor: "#FF9999", right: 0, borderRadius: 10}}>

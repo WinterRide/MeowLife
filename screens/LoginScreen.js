@@ -19,7 +19,7 @@ const LoginScreen = () => {
       setLoading(true);
       try {
         const response = await signInWithEmailAndPassword(auth, email, password);
-        console.log(response);
+        console.log(response._tokenResponse.email + " logged in");
       } catch (error){
         console.log(error);
         alert("Sign in failed " + error.message)

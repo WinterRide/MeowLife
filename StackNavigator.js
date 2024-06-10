@@ -20,6 +20,9 @@ import OrderScreen from "./screens/OrderScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
 import ItemInfoScreen from "./screens/ItemInfoScreen";
 import CatListingScreen from "./screens/CatListingScreen";
+import ViewRequestScreen from "./screens/ViewListingRequestScreen";
+import FeaturedProductScreen from "./screens/FeaturedProductScreen";
+import ViewOrderRequestScreen from "./screens/ViewOrderRequestScreen";
 
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -158,6 +161,9 @@ const StackNavigator = () => {
             <Stack.Screen name="EditProfile" component={EditProfileScreen} />
             <Stack.Screen name="ItemInfo" component={ItemInfoScreen} />
             <Stack.Screen name="Cat Listing" component={CatListingScreen} />
+            <Stack.Screen name="Listing Request" component={ViewRequestScreen} />
+            <Stack.Screen name="Order Request" component={ViewOrderRequestScreen} />
+            <Stack.Screen name="Add Featured Product" component={FeaturedProductScreen} />
           </>
         ) : (
           <>

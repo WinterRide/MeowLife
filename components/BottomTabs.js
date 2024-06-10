@@ -30,7 +30,7 @@ const BottomTabs = () => {
 
     goToOrder = () => {
         navigation.navigate("Main", {
-            screen: "YourOrder",
+            screen: "Your Order",
           });
     }
 

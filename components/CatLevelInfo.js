@@ -3,7 +3,7 @@ import React from "react";
 import { Feather } from "@expo/vector-icons";
 import { Tooltip } from "react-native-elements";
 
-const CatLevelInfo = () => {
+const CatLevelInfo = ({levelColor}) => {
   const window = Dimensions.get("window");
   const windowWidth = window.width;
   const windowHeight = window.height;
@@ -74,7 +74,7 @@ const CatLevelInfo = () => {
         backgroundColor="white"
         withOverlay={true}
       >
-        <Feather name="info" size={24} color="#F15025" />
+        <Feather name="info" size={24} color={levelColor} />
       </Tooltip>
     </View>
   );

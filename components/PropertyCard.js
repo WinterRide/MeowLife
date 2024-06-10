@@ -22,14 +22,20 @@ const PropertyCard = ({ item }) => {
 
   const infoScreen = () => {
     navigation.navigate("ItemInfo", {
+      id: item.id,
       photos: item.photos,
       species: item.species,
       age: item.age,
+      breed: item.breed,
       owner: item.owner,
+      ownerEmail: item.ownerEmail,
       price: item.price,
       level: item.level,
       vaccine: item.vaccine,
       description: item.description,
+      status: item.status,
+      onFeatured: item.onFeatured,
+      onOrder: item.onOrder
     });
   };
   

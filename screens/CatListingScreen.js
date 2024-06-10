@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View, Alert,
+  View,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,24 +22,29 @@ import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid"; // Install this using npm or yarn
 import { storage, firestore, firebase } from "../firebase"; // Adjust according to your Firebase setup
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
-import { addDoc, collection } from "firebase/firestore";
-import * as FileSystem from "expo-file-system"
+import { addDoc, collection, updateDoc } from "firebase/firestore";
+import * as FileSystem from "expo-file-system";
+import { useUser } from "../UserContext";
+import { uploadData, uploadImages, uploadVaccines } from "../controller/DistinctController";
+import { useNavigation } from "@react-navigation/native";
 
 const CatListingScreen = () => {
   const window = Dimensions.get("window");
   const windowWidth = window.width;
   const windowHeight = window.height;
-
+  const navigation = useNavigation();
+  const { userInfo } = useUser();
   const [species, setSpecies] = useState("");
   const [breed, setBreed] = useState("");
   const [price, setPrice] = useState(0);
+  const [age, setAge] = useState(0);
   const [description, setDescription] = useState("");
   const [affection, setAffection] = useState(1);
   const [playfulness, setPlayfulness] = useState(1);
   const [kidFriendly, setKidFriendly] = useState(1);
   const [energy, setEnergy] = useState(1);
 
-    const [uploading, setUploading] = useState(false)
+  const [uploading, setUploading] = useState(false);
 
   const breedList = [
     "American breed",
@@ -50,6 +56,11 @@ const CatListingScreen = () => {
   const handlePriceChange = (text) => {
     const numericText = text.replace(/[^0-9]/g, "");
     setPrice(numericText);
+  };
+
+  const handleAgeChange = (text) => {
+    const numericText = text.replace(/[^0-9]/g, "");
+    setAge(numericText);
   };
 
   const onPressUp = (level, setLevel) => {
@@ -137,162 +148,30 @@ const CatListingScreen = () => {
     }
   };
 
-    const uploadImages = async (imageUris) => {
-        setUploading(true);
-        const imageUrls = [];
-    
-        try {
-            for (const image of imageUris) {
-                const { uri } = await FileSystem.getInfoAsync(image);
-                const blob = await new Promise((resolve, reject) => {
-                    const xhr = new XMLHttpRequest();
-                    xhr.onload = () => {
-                        resolve(xhr.response);
-                    };
-                    xhr.onerror = (e) => {
-                        reject(new TypeError("Network request failed"));
-                    };
-                    xhr.responseType = 'blob';
-                    xhr.open('GET', uri, true);
-                    xhr.send(null);
-                });
-    
-                const fileName = image.substring(image.lastIndexOf('/') + 1);
-                const fileRef = ref(storage, `product/${fileName}`); // Adjusted to use imported storage
-    
-                await uploadBytes(fileRef, blob);
-    
-                // Get the download URL
-                const downloadURL = await getDownloadURL(fileRef);
-                imageUrls.push(downloadURL);
-            }
-    
-            setUploading(false);
-            setImages([]); // Clear the images after upload
-    
-            return imageUrls;
-    
-        } catch (error) {
-            console.error(error);
-            setUploading(false);
-            return [];
-        }
-    };
-    
-    const uploadVaccines = async (vaccineList) => {
-        setUploading(true);
-        const imageUrls = [];
-    
-        try {
-            for (const vaccine of vaccineList) {
-                const { image, name } = vaccine
-                if (!image) continue; // Skip if there is no image
-    
-                const { uri } = await FileSystem.getInfoAsync(image);
-                const blob = await new Promise((resolve, reject) => {
-                    const xhr = new XMLHttpRequest();
-                    xhr.onload = () => {
-                        resolve(xhr.response);
-                    };
-                    xhr.onerror = (e) => {
-                        reject(new TypeError("Network request failed"));
-                    };
-                    xhr.responseType = 'blob';
-                    xhr.open('GET', uri, true);
-                    xhr.send(null);
-                });
-    
-                const fileName = image.substring(image.lastIndexOf('/') + 1);
-                const fileRef = ref(storage, `vaccines/${fileName}`); // Adjusted to use imported storage
-    
-                await uploadBytes(fileRef, blob);
-    
-                // Get the download URL
-                const downloadURL = await getDownloadURL(fileRef);
-                imageUrls.push({name, images: downloadURL});
-            }
-    
-            setUploading(false);
-            return imageUrls;
-    
-        } catch (error) {
-            console.error(error);
-            setUploading(false);
-            return [];
-        }
-    };
-
-    const handleUpload = async () => {
-        try {
-            const imageUrls = await uploadImages(images);
-            const updatedVaccines = await uploadVaccines(vaccines);
-            await addDoc(collection(firestore, 'catListings'), {
-                species,
-                breed,
-                price: Number(price),
-                description,
-                level: [
-                    { affection },
-                    { playfulness },
-                    { kidFriendly },
-                    { energy }
-                ],
-                images: imageUrls,
-                vaccines: updatedVaccines,
-            });
-            alert('Cat listing requested successfully!');
-        } catch (error) {
-            console.error('Error uploading cat listing:', error);
-            alert('Error uploading cat listing. Please try again.');
-        }
-    };
+  const handleUpload = async () => {
+    setUploading(true)
+    const imageUrls = await uploadImages(images);
+    const updatedVaccines = await uploadVaccines(vaccines);
+    uploadData("request", {
+      species,
+      breed,
+      age: Number(age),
+      owner: userInfo.nickname,
+      ownerEmail: userInfo.email,
+      price: Number(price),
+      description,
+      level: [{ affection }, { playfulness }, { kidFriendly }, { energy }],
+      photos: imageUrls,
+      vaccine: updatedVaccines,
+      status: "In Review",
+      type: "cat"
+    });
+    alert("Cat Listing requested successfully")
+    setUploading(false)
+    navigation.navigate
+  };
 
   const image = images[0];
-
-    console.log(vaccines)
-
-
-    const uploadMedia = async () => {
-        setUploading(true);
-    
-        try {
-            const { uri } = await FileSystem.getInfoAsync(image);
-            const blob = await new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.onload = () => {
-                    resolve(xhr.response);
-                };
-                xhr.onerror = (e) => {
-                    reject(new TypeError("Network request failed"));
-                };
-                xhr.responseType = 'blob';
-                xhr.open('GET', uri, true);
-                xhr.send(null);
-            });
-    
-            const fileName = image.substring(image.lastIndexOf('/') + 1);
-            const ref = firebase.storage().ref().child(`product/${fileName}`);
-    
-            await ref.put(blob);
-    
-            // Get the download URL
-            const downloadURL = await ref.getDownloadURL();
-    
-            setUploading(false);
-            Alert.alert('Photo uploaded!!', `Download URL: ${downloadURL}`);
-            console.log(downloadURL)
-            setImage(null);
-    
-            // Optionally, you can return the download URL or use it as needed
-           
-    
-        } catch (error) {
-            console.error(error);
-            setUploading(false);
-        }
-    };
-    
-    
 
   return (
     <View
@@ -472,7 +351,7 @@ const CatListingScreen = () => {
               >
                 Cat Level
               </Text>
-              <CatLevelInfo />
+              <CatLevelInfo levelColor={"#F15025"} />
             </View>
 
             <View style={{ flex: 1, alignItems: "center", gap: 16 }}>
@@ -528,6 +407,33 @@ const CatListingScreen = () => {
               justifyContent: "center",
               borderBottomWidth: 2,
               borderColor: "gray",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 18,
+                color: "#F15025",
+                fontWeight: "bold",
+                marginBottom: 20,
+              }}
+            >
+              Cat Age (in years)
+            </Text>
+            <TextInput
+              value={age}
+              onChangeText={handleAgeChange}
+              keyboardType="numeric"
+              placeholder="Enter your cat age"
+              style={{ paddingBottom: 5, fontSize: species ? 18 : 18 }}
+            />
+          </View>
+
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              borderBottomWidth: 2,
+              borderColor: "gray",
               paddingBottom: 5,
             }}
           >
@@ -551,17 +457,33 @@ const CatListingScreen = () => {
             />
           </View>
 
-                    <View style={{ flex: 1, height: windowHeight / 5 }}>
-                        <Pressable onPress={handleUpload}
-                            style={{ top: 0, backgroundColor: "#F15025", alignItems: "center", justifyContent: "center", borderRadius: 10, padding: 10 }}>
-                            <Text style={{ fontWeight: "bold", color: "white", fontSize: 15 }}>Request Cat Listing</Text>
-                        </Pressable>
-                    </View>
-
-                </View>
-            </ScrollView>
+          <View style={{ flex: 1, height: windowHeight / 5 }}>
+            {uploading ? (
+              <Text style={{ flex: 1, alignSelf: "center" }}>Uploading</Text>
+            ) : (
+              <Pressable
+                onPress={handleUpload}
+                style={{
+                  top: 0,
+                  backgroundColor: "#F15025",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10,
+                  padding: 10,
+                }}
+              >
+                <Text
+                  style={{ fontWeight: "bold", color: "white", fontSize: 15 }}
+                >
+                  Request Cat Listing
+                </Text>
+              </Pressable>
+            )}
+          </View>
         </View>
-    );
+      </ScrollView>
+    </View>
+  );
 };
 
 export default CatListingScreen;

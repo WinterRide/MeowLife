@@ -1,48 +1,46 @@
 import { Dimensions, Pressable, StyleSheet, TextInput, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import SearchResult from '../components/SearchResult';
+import { firestore } from "../firebase";
+import { getDocs, collection } from "firebase/firestore";
 
 const SearchScreen = () => {
+  const route = useRoute()
   const navigation = useNavigation();
   const window = Dimensions.get('window');
   const windowWidth = window.width;
   const windowHeight = window.height;
 
   const [input, setInput] = useState("")
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(false)
 
-  const data = [
-    {
-      species : "Balinese",
-      breed: "Other breeds",
-      age: 4,
-      owner: "Jose",
-      price: 12000000
-    },
-    {
-      species: "Birman",
-      breed: "Eastern breeds",
-      age: 5,
-      owner: "Kitsune",
-      price: 13000000
-    },
-    {
-      species: "American shorthair",
-      breed: "American breeds",
-      age: 5,
-      owner: "WinterRide",
-      price: 18000000
-    },
-    {
-      species: "American bobtail",
-      breed: "American breeds",
-      age: 3,
-      owner: "Imjoo",
-      price: 20000000
-    }
-  ];
+  useEffect(() => {
+    if (data.length > 0) return;
+  
+    setLoading(true);
+  
+    const fetchProducts = async () => {
+      try {
+        const colRef = collection(firestore, "market");
+        const docsSnap = await getDocs(colRef);
+        const fetchedData = [];
+        docsSnap.forEach((doc) => {
+          fetchedData.push(doc.data());
+        });
+        setData(fetchedData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    };
+  
+    fetchProducts();
+  }, [data, route.params]);
 
   const handleSearch = () => {
     navigation.navigate("Main", {
