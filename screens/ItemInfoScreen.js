@@ -132,12 +132,10 @@ const ItemInfoScreen = () => {
           <Text style={{ fontSize: 15, marginTop: 25, marginBottom: 10 }}>
             Owner : {route.params.owner}
           </Text>
-
+          <Text syle={{color: "gray"}}>0.0 (0)</Text>
           <View
             style={{
-              position: "absolute",
-              right: 0,
-              bottom: 0,
+              
               flex: 1,
               alignItems: "center",
               marginBottom: 10,

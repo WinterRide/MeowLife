@@ -15,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, firestore } from "../firebase";
 import { setDoc, doc } from "firebase/firestore";
+import { createUser } from "../model/UserFactory";
 
 const RegisterScreen = () => {
   const [nickname, setNickname] = useState("");

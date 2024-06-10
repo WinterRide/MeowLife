@@ -1,10 +1,11 @@
 import { firestore } from "../firebase";
-import { getDocs, collection, doc, query, where } from "firebase/firestore";
+import { getDocs, collection, setDoc, doc, query, where } from "firebase/firestore";
 import "react-native-get-random-values";
-import { storage } from "../firebase";
+import { storage, firebase } from "../firebase";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { addDoc, updateDoc } from "firebase/firestore";
 import * as FileSystem from "expo-file-system"
+import { useState } from "react";
 
 export const getData = async(collectionName) => {
     const colRef = collection(firestore, collectionName);
@@ -42,8 +43,6 @@ export const getUserDocIdByEmail = async (email) => {
         throw error;
     }
 };
-
-
 
 export const uploadImages = async (imageUris) => {
     // setUploading(true);
@@ -130,9 +129,15 @@ export const uploadVaccines = async (vaccineList) => {
     }
 };
 
-export const uploadData = async(collectionName, data) => {
-    const docRef = await addDoc(collection(firestore, collectionName), data);
-    await updateDoc(doc(firestore, collectionName, docRef.id), {
+export const uploadData = async (collectionName, data) => {
+    try {
+      const docRef = await addDoc(collection(firestore, collectionName), data);
+      await updateDoc(doc(firestore, collectionName, docRef.id), {
         id: docRef.id
-    });
-}
+      });
+      alert("Cat Listing Successfully Requested")
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      throw error; // Optionally rethrow the error if you want to handle it further up the chain
+    }
+  };

@@ -23,7 +23,7 @@ import {
   uploadVaccines,
 } from "../controller/DistinctController";
 import { useNavigation } from "@react-navigation/native";
-import { createCat } from "../factory/CatFactory";
+import { createCat } from "../model/CatFactory";
 
 const CatListingScreen = () => {
   const window = Dimensions.get("window");
@@ -162,7 +162,6 @@ const CatListingScreen = () => {
       vaccine: updatedVaccines,
     });
     uploadData("request", cat);
-    alert("Cat Listing requested successfully");
     setUploading(false);
     navigation.navigate;
   };

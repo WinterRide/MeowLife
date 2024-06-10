@@ -1,4 +1,4 @@
-export const createCat = async ({
+export const createCat = ({
   species,
   breed,
   age,
