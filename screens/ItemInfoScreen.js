@@ -122,46 +122,71 @@ const ItemInfoScreen = () => {
             marginHorizontal: 20,
             marginTop: 20,
             borderBottomWidth: 2,
-            flexDirection: 'row',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
+            flexDirection: "row",
+            alignItems: "flex-start",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
           }}
         >
           <View>
-            <Text style={{ fontSize: 12 }}>{route.params.age} years old</Text>
-            <Text style={{ fontSize: 30, fontWeight: 'bold' }}>
-              {route.params.species}
-            </Text>
-            <Text style={{ fontSize: 12 }}>{route.params.breed}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                marginBottom: 10,
+                width: "100%",
+              }}
+            >
+              <View>
+                <Text style={{ fontSize: 12 }}>
+                  {route.params.age} years old
+                </Text>
+                <Text style={{ fontSize: 30, fontWeight: "bold" }}>
+                  {route.params.species}
+                </Text>
+                <Text style={{ fontSize: 12 }}>{route.params.breed}</Text>
+              </View>
+              {route.params.status === "Accepted" &&
+                userInfo.onOrder === false && (
+                  <Pressable
+                    onPress={handleRequestOrderAction}
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "#F15025",
+                      flexDirection: "row",
+                      borderRadius: 20,
+                      padding: 5,
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                      marginTop: 15,
+                    }}
+                  >
+                    <Ionicons name="add" size={25} color="white" />
+                    <Text style={{ fontSize: 15, color: "white" }}>
+                      Request Order
+                    </Text>
+                  </Pressable>
+                )}
+            </View>
             <Text style={{ fontSize: 15, marginTop: 25, marginBottom: 10 }}>
               Owner : {route.params.owner}
             </Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' , marginBottom: 10}}>
-              <Text style={{ color: 'gray' }}>0.0 (0)</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 10,
+              }}
+            >
+              <Text style={{ color: "gray" }}>0.0 (0)</Text>
               <Text style={{ fontSize: 15, marginLeft: 10 }}>
                 {formattedPrice}
               </Text>
             </View>
           </View>
-          {route.params.status === 'Accepted' && userInfo.onOrder === false ? (
-            <Pressable
-              onPress={handleRequestOrderAction}
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#F15025',
-                flexDirection: 'row',
-                borderRadius: 20,
-                padding: 5,
-                paddingLeft: 20,
-                paddingRight: 20,
-                marginTop: 15,
-              }}
-            >
-              <Ionicons name="add" size={25} color="white" />
-              <Text style={{ fontSize: 15, color: 'white' }}>Request Order</Text>
-            </Pressable>
-          ) : null}
         </View>
 
         <View
@@ -247,94 +272,94 @@ const ItemInfoScreen = () => {
           {userInfo?.role == "Admin" && route.params.status != "Accepted" && (
             <View style={{ flex: 1, width: windowWidth / 3, gap: 10 }}>
               <Pressable
-              onPress={handleAcceptAction}
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#25BC3D",
-                flexDirection: "row",
-                borderRadius: 20,
-                padding: 5,
-                paddingLeft: 20,
-                paddingRight: 20,
-              }}
-            >
-              <Text style={{ fontSize: 15, color: "white" }}>Accept</Text>
-            </Pressable>
-            <Pressable
-              onPress={handleRejectAction}
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#FF0000",
-                flexDirection: "row",
-                borderRadius: 20,
-                padding: 5,
-                paddingLeft: 20,
-                paddingRight: 20,
-              }}
-            >
-              <Text style={{ fontSize: 15, color: "white" }}>Reject</Text>
-            </Pressable>
-          </View>
-        )}
-      </View>
-
-      <View
-        style={{
-          flex: 1,
-          marginHorizontal: 20    ,
-          marginTop: 20,
-          borderBottomWidth: 2,
-          paddingBottom: 20,
-        }}
-      >
-        <LevelIndicator level={route.params.level} />
-      </View>
-
-      <View
-        style={{
-          flex: 1,
-          marginHorizontal: 20,
-          marginTop: 20,
-          borderBottomWidth: 2,
-          paddingBottom: 20,
-        }}
-      >
-        <Text style={{ color: "gray", marginBottom: 10 }}>
-          Vaccine List :
-        </Text>
-        {route.params.vaccine.map((val, index) => (
-          <View key={index} style={{ flexDirection: "row" }}>
-            <Text style={{ color: "gray" }}>
-              {index + 1}. {val.name}
-            </Text>
-            {userInfo.role == "Admin" && (
-              <Pressable style={{ marginLeft: 10 }}>
-                <AntDesign name="download" size={18} color="black" />
+                onPress={handleAcceptAction}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#25BC3D",
+                  flexDirection: "row",
+                  borderRadius: 20,
+                  padding: 5,
+                  paddingLeft: 20,
+                  paddingRight: 20,
+                }}
+              >
+                <Text style={{ fontSize: 15, color: "white" }}>Accept</Text>
               </Pressable>
-            )}
-          </View>
-        ))}
-      </View>
+              <Pressable
+                onPress={handleRejectAction}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#FF0000",
+                  flexDirection: "row",
+                  borderRadius: 20,
+                  padding: 5,
+                  paddingLeft: 20,
+                  paddingRight: 20,
+                }}
+              >
+                <Text style={{ fontSize: 15, color: "white" }}>Reject</Text>
+              </Pressable>
+            </View>
+          )}
+        </View>
 
-      <View
-        style={{
-          flex: 1,
-          marginHorizontal: 20,
-          marginTop: 20,
-          paddingBottom: 20,
-        }}
-      >
-        <Text style={{ color: "gray", marginBottom: 10 }}>Description :</Text>
-        <Text style={{ flex: 1, color: "gray", marginBottom: 70 }}>
-          {route.params.description}
-        </Text>
-      </View>
-    </ScrollView>
-    <BottomTabs />
-  </View>
-);
+        <View
+          style={{
+            flex: 1,
+            marginHorizontal: 20,
+            marginTop: 20,
+            borderBottomWidth: 2,
+            paddingBottom: 20,
+          }}
+        >
+          <LevelIndicator level={route.params.level} />
+        </View>
+
+        <View
+          style={{
+            flex: 1,
+            marginHorizontal: 20,
+            marginTop: 20,
+            borderBottomWidth: 2,
+            paddingBottom: 20,
+          }}
+        >
+          <Text style={{ color: "gray", marginBottom: 10 }}>
+            Vaccine List :
+          </Text>
+          {route.params.vaccine.map((val, index) => (
+            <View key={index} style={{ flexDirection: "row" }}>
+              <Text style={{ color: "gray" }}>
+                {index + 1}. {val.name}
+              </Text>
+              {userInfo.role == "Admin" && (
+                <Pressable style={{ marginLeft: 10 }}>
+                  <AntDesign name="download" size={18} color="black" />
+                </Pressable>
+              )}
+            </View>
+          ))}
+        </View>
+
+        <View
+          style={{
+            flex: 1,
+            marginHorizontal: 20,
+            marginTop: 20,
+            paddingBottom: 20,
+          }}
+        >
+          <Text style={{ color: "gray", marginBottom: 10 }}>Description :</Text>
+          <Text style={{ flex: 1, color: "gray", marginBottom: 70 }}>
+            {route.params.description}
+          </Text>
+        </View>
+      </ScrollView>
+      <BottomTabs />
+    </View>
+  );
 };
 
 export default ItemInfoScreen;
