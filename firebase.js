@@ -7,7 +7,6 @@ import firebase from "firebase/compat/app"
 import "firebase/compat/storage"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBA8Zhtf-EvTLObcNnZs9kbkYlHenMko6g",
   authDomain: "meowlife-5b904.firebaseapp.com",
   projectId: "meowlife-5b904",
   storageBucket: "meowlife-5b904.appspot.com",
