@@ -7,11 +7,12 @@ import firebase from "firebase/compat/app"
 import "firebase/compat/storage"
 
 const firebaseConfig = {
-  authDomain: "meowlife-5b904.firebaseapp.com",
-  projectId: "meowlife-5b904",
-  storageBucket: "meowlife-5b904.appspot.com",
-  messagingSenderId: "37571279844",
-  appId: "1:37571279844:web:5e5f6fa7449beb1b0f65f1"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID",
 };
 
 const app = initializeApp(firebaseConfig);
